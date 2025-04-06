@@ -24,4 +24,20 @@ public class GlobalExceptionHandler {
         return Result.error(ex.getMessage());
     }
 
+    /*
+     * 捕获SQL异常
+     */
+    @ExceptionHandler
+    public Result<String> exceptionHandler(java.sql.SQLIntegrityConstraintViolationException ex){
+       String message = ex.getMessage(); 
+       if(message.contains("Duplicate entry")){
+           String[] split = message.split(" ");
+           message = split[2] + "已存在";
+
+           return Result.error(message);
+       }
+       // 添加默认返回值，处理其他SQL异常情况
+       return Result.error("数据库操作异常");
+    }
+
 }
